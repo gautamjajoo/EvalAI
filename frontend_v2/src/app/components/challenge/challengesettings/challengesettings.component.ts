@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Router } from '@angular/router';
@@ -17,9 +17,19 @@ import { GlobalService } from '../../../services/global.service';
 })
 export class ChallengesettingsComponent implements OnInit, OnDestroy {
   /**
+   * Phase object input
+   */
+   @Input() phase: object;
+  
+  /**
    * Challenge object
    */
   challenge: any;
+
+  /**
+   * Challenge object
+   */
+   phases: any;  
 
   /**
    * store worker logs
@@ -100,6 +110,11 @@ export class ChallengesettingsComponent implements OnInit, OnDestroy {
     this.challengeService.currentChallenge.subscribe((challenge) => {
       this.challenge = challenge;
     });
+
+    this.challengeService.currentPhases.subscribe((phase) => {
+      this.phase = phase;
+    });
+
     this.challengeService.isChallengeHost.subscribe((status) => {
       this.isChallengeHost = status;
     });
@@ -435,6 +450,49 @@ export class ChallengesettingsComponent implements OnInit, OnDestroy {
       confirmCallback: SELF.apiCall,
     };
     SELF.globalService.showModal(PARAMS);
+  }
+
+  editChallengePhase() {
+    const SELF = this;
+    SELF.apiCall = (params) => {
+      const FORM_DATA: FormData = new FormData();
+      for (const key in params) {
+        if (params[key]) {
+          FORM_DATA.append(key, params[key]);
+        }
+      }
+      SELF.apiService
+        .patchFileUrl(
+          SELF.endpointsService.updateChallengePhaseDetailsURL(SELF.challenge.id, SELF.phase['id']),
+          FORM_DATA
+        )
+        .subscribe(
+          (data) => {
+            SELF.phase = data;
+            SELF.globalService.showToast('success', 'The challenge phase details are successfully updated!');
+          },
+          (err) => {
+            SELF.globalService.showToast('error', err);
+          },
+          () => {}
+        );
+    };
+
+    const PARAMS = {
+      title: 'Edit Challenge Phase Details',
+      name: SELF.phase['name'],
+      label: 'description',
+      description: SELF.phase['description'],
+      startDate: SELF.phase['start_date'],
+      endDate: SELF.phase['end_date'],
+      maxSubmissionsPerDay: SELF.phase['max_submissions_per_day'],
+      maxSubmissionsPerMonth: SELF.phase['max_submissions_per_month'],
+      maxSubmissions: SELF.phase['max_submissions'],
+      confirm: 'Submit',
+      deny: 'Cancel',
+      confirmCallback: SELF.apiCall,
+    };
+    SELF.globalService.showEditPhaseModal(PARAMS);
   }
 
   /**

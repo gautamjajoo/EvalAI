@@ -69,6 +69,11 @@
           (click)="stopParticipation($event)"
           ><strong class="text-light-black fs-15">Close Participation</strong>
         </mat-checkbox>
+    <div *ngIf="isChallengeHost" class="col-md-1 col-sm-1 col-xs-2 col-lr-pad">
+      <a class="pointer" (click)="editChallengePhase()">
+        <i class="fa fa-pencil fs-16" aria-hidden="true"> </i>&nbsp;edit
+      </a>
+  </div>
       </div>
     </div>
 
