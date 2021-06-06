@@ -2152,7 +2152,7 @@ tr {
   }
 
   .page-wrap {
-    max-width: 100% !important;
+    max-width: 1440px !important;
     overflow: hidden;
     margin: auto !important;
     position: relative !important;
@@ -2161,13 +2161,12 @@ tr {
   }
 
   .web-container {
-    width: unset;
+    width: calc(1440px - 223px) !important;
   }
 
   .dashboard-flex,
   .dashboard-content {
     min-height: calc(90vh - 64px) !important;
-    width: calc(100vw- 223px) !important;
   }
 
   .grad-vh {
